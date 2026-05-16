@@ -1,0 +1,1 @@
+rpc = exports["ddj_lib"]:getRPC()
