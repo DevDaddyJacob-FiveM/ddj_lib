@@ -1,4 +1,3 @@
-local Logger = exports["ddj_lib"]:getLogger()
 local logger = Logger.new("ddj_lib_rpc")
 
 local registered = {}

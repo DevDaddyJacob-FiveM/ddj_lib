@@ -1,4 +1,4 @@
-local LogLevel = {}
+LogLevel = {}
 LogLevel.OFF = 0
 LogLevel.FATAL = 100
 LogLevel.ERROR = 200
@@ -8,7 +8,7 @@ LogLevel.DEBUG = 500
 LogLevel.TRACE = 600
 LogLevel.ALL = math.maxinteger
 
-local Logger = {}
+Logger = {}
 Logger.__index = Logger
 
 
@@ -230,13 +230,3 @@ function Logger.new(resourceIdentifier, logLevel)
 
     return newLogger
 end
-
-
-exports("getLogLevels", function()
-    return LogLevel
-end)
-
-
-exports("getLogger", function()
-    return Logger
-end)

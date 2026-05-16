@@ -20,6 +20,5 @@ server_scripts {
 }
 
 files {
-	"imports/logging.lua",
 	"imports/rpc.lua",
 }
