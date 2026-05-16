@@ -9,13 +9,12 @@ LogLevel.TRACE = 600
 LogLevel.ALL = math.maxinteger
 
 local Logger = {}
-Logger._level = LogLevel.INFO
-Logger._overrideConvar = false
-Logger._resourceIdentifier = GetCurrentResourceName() or "DevDaddyJacob"
+Logger.__index = Logger
 
-local function fetchLogLevelConvar()
+
+function Logger._fetchLogLevelConvar(self)
     local globalConvar = "ddj_log_level"
-    local resourceConvar = globalConvar .. Logger._resourceIdentifier
+    local resourceConvar = globalConvar .. self._resourceIdentifier
 
     local rawResourceLevel = GetConvar(resourceConvar, "UNKNOWN")
     if "OFF" == rawResourceLevel then return LogLevel.OFF end
@@ -47,10 +46,46 @@ local function fetchLogLevelConvar()
     end
 
     return nil
+
 end
 
-local function canLogLevel(targetLevel)
-    local level = Logger.getLogLevel()
+
+function Logger.setResourceIdentifier(self, ident)
+    if nil == ident then
+        self._resourceIdentifier = GetCurrentResourceName() or "DevDaddyJacob"
+        return
+    end
+
+    self._resourceIdentifier = ident
+end
+
+
+function Logger.getLogLevel(self)
+    if self._overrideConvar then
+        return self._level
+    end
+
+    local convarLevel = self:_fetchLogLevelConvar()
+    if nil ~= convarLevel then
+        return convarLevel
+    end
+
+    return LogLevel.INFO
+end
+
+function Logger.setLogLevel(self, level)
+    if nil == level then
+        self._overrideConvar = false
+        return
+    end
+
+    self._level = level
+    self._overrideConvar = true
+end
+
+
+function Logger.canLogLevel(self, targetLevel)
+    local level = self:getLogLevel()
 
     if LogLevel.OFF == level then
         return false
@@ -63,12 +98,13 @@ local function canLogLevel(targetLevel)
     return targetLevel <= level
 end
 
-local function printInternal(level, prefix, message)
-    if not canLogLevel(level) then
+
+function Logger._print(self, level, prefix, message)
+    if not self:canLogLevel(level) then
         return
     end
 
-    local fullMsg = "[" .. Logger._resourceIdentifier .. "]"
+    local fullMsg = "[" .. self._resourceIdentifier .. "]"
 
     if nil ~= prefix then
         fullMsg = fullMsg .. " " .. prefix .. ": "
@@ -77,111 +113,129 @@ local function printInternal(level, prefix, message)
     print(fullMsg .. message)
 end
 
-function Logger.getLogLevel()
-    if Logger._overrideConvar then
-        return Logger._level
-    end
 
-    local convarLevel = fetchLogLevelConvar()
-    if nil ~= convarLevel then
-        return convarLevel
-    end
-
-    return LogLevel.INFO
+function Logger.fatal(self, message, ...)
+    self:_print(LogLevel.FATAL, "FATAL", string.format(message, ...))
 end
 
-function Logger.setLogLevel(level)
-    if nil == level then
-        Logger._overrideConvar = false
-        return
-    end
-
-    Logger._level = level
-    Logger._overrideConvar = true
-end
-
-function Logger.setResourceIdentifier(ident)
-    if nil == ident then
-        Logger._resourceIdentifier = GetCurrentResourceName() or "DevDaddyJacob"
-        return
-    end
-
-    Logger._resourceIdentifier = ident
-end
-
-function Logger.fatal(message, ...)
-    printInternal(LogLevel.FATAL, "FATAL", string.format(message, ...))
-end
-
-function Logger.fatalIf(condition, message, ...)
+function Logger.fatalIf(self, condition, message, ...)
     if condition then
-        Logger.fatal(message, ...)
+        self:fatal(message, ...)
     end
 end
 
-function Logger.error(message, ...)
-    printInternal(LogLevel.ERROR, "ERROR", string.format(message, ...))
+
+function Logger.error(self, message, ...)
+    self:_print(LogLevel.ERROR, "ERROR", string.format(message, ...))
 end
 
-function Logger.errorIf(condition, message, ...)
+
+function Logger.errorIf(self, condition, message, ...)
     if condition then
-        Logger.error(message, ...)
+        self:error(message, ...)
     end
 end
 
-function Logger.warn(message, ...)
-    printInternal(LogLevel.WARN, "WARN", string.format(message, ...))
+
+function Logger.warn(self, message, ...)
+    self:_print(LogLevel.WARN, "WARN", string.format(message, ...))
 end
 
-function Logger.warnIf(condition, message, ...)
+
+function Logger.warnIf(self, condition, message, ...)
     if condition then
-        Logger.warn(message, ...)
+        self:warn(message, ...)
     end
 end
 
-function Logger.info(message, ...)
-    printInternal(LogLevel.INFO, "INFO", string.format(message, ...))
+
+function Logger.info(self, message, ...)
+    self:_print(LogLevel.INFO, "INFO", string.format(message, ...))
 end
 
-function Logger.infoIf(condition, message, ...)
+
+function Logger.infoIf(self, condition, message, ...)
     if condition then
-        Logger.info(message, ...)
+        self:info(message, ...)
     end
 end
 
-function Logger.debug(message, ...)
-    printInternal(LogLevel.DEBUG, "DEBUG", string.format(message, ...))
+
+function Logger.debug(self, message, ...)
+    self:_print(LogLevel.DEBUG, "DEBUG", string.format(message, ...))
 end
 
-function Logger.debugIf(condition, message, ...)
+
+function Logger.debugIf(self, condition, message, ...)
     if condition then
-        Logger.debug(message, ...)
+        self:debug(message, ...)
     end
 end
 
-function Logger.trace(message, ...)
-    printInternal(LogLevel.TRACE, "TRACE", string.format(message, ...))
+
+function Logger.trace(self, message, ...)
+    self:_print(LogLevel.TRACE, "TRACE", string.format(message, ...))
 end
 
-function Logger.traceIf(condition, message, ...)
+
+function Logger.traceIf(self, condition, message, ...)
     if condition then
-        Logger.trace(message, ...)
+        self:trace(message, ...)
     end
 end
 
-function Logger.custom(logLevel, message, ...)
-    printInternal(logLevel, nil, string.format(message, ...))
+
+function Logger.custom(self, logLevel, message, ...)
+    self:_print(logLevel, nil, string.format(message, ...))
 end
 
-function Logger.customIf(condition, logLevel, message, ...)
+
+function Logger.customIf(self, condition, logLevel, message, ...)
     if condition then
-        Logger.custom(logLevel, message, ...)
+        self:custom(logLevel, message, ...)
     end
 end
+
+
+function Logger.new(resourceIdentifier, logLevel)
+    local newLogger = {}
+    setmetatable(newLogger, Logger)
+
+    newLogger._resourceIdentifier = resourceIdentifier
+        or GetCurrentResourceName() or "DevDaddyJacob"
+
+    newLogger._level = logLevel or LogLevel.INFO
+    newLogger._overrideConvar = false
+
+    newLogger._fetchLogLevelConvar = Logger._fetchLogLevelConvar
+    newLogger.setResourceIdentifier = Logger.setResourceIdentifier
+    newLogger.getLogLevel = Logger.getLogLevel
+    newLogger.setLogLevel = Logger.setLogLevel
+    newLogger.canLogLevel = Logger.canLogLevel
+    newLogger._print = Logger._print
+    newLogger.fatal = Logger.fatal
+    newLogger.fatalIf = Logger.fatalIf
+    newLogger.error = Logger.error
+    newLogger.errorIf = Logger.errorIf
+    newLogger.warn = Logger.warn
+    newLogger.warnIf = Logger.warnIf
+    newLogger.info = Logger.info
+    newLogger.infoIf = Logger.infoIf
+    newLogger.debug = Logger.debug
+    newLogger.debugIf = Logger.debugIf
+    newLogger.trace = Logger.trace
+    newLogger.traceIf = Logger.traceIf
+    newLogger.custom = Logger.custom
+    newLogger.customIf = Logger.customIf
+
+    return newLogger
+end
+
 
 exports("getLogLevels", function()
     return LogLevel
 end)
+
 
 exports("getLogger", function()
     return Logger
