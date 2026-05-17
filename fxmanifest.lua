@@ -5,7 +5,7 @@ use_experimental_fxv2_oal "yes"
 
 author "DevDaddyJacob"
 description "DevDaddyJacob's common FiveM libraries"
-version "1.0.0"
+version "1.1.0"
 
 shared_scripts {
 	"shared/logging.lua",
