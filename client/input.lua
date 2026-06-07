@@ -27,7 +27,7 @@ function Input.registerInput(inputName, command, keybindOptions)
             "+" .. command,
             keybindOptions["description"],
             keybindOptions["mapper"],
-            keybindOptions["defaultPrimary"],
+            keybindOptions["defaultPrimary"]
         )
 
         if
@@ -38,7 +38,7 @@ function Input.registerInput(inputName, command, keybindOptions)
                 "~!+" .. command,
                 keybindOptions["description"],
                 keybindOptions["mapper"],
-                keybindOptions["defaultSecondary"],
+                keybindOptions["defaultSecondary"]
             )
         end
     end
