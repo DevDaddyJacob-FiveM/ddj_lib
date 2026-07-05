@@ -14,7 +14,7 @@ Logger.__index = Logger
 
 function Logger._fetchLogLevelConvar(self)
     local globalConvar = "ddj_log_level"
-    local resourceConvar = globalConvar .. self._resourceIdentifier
+    local resourceConvar = globalConvar .. "-" ..  self._resourceIdentifier
 
     local rawResourceLevel = GetConvar(resourceConvar, "UNKNOWN")
     if "OFF" == rawResourceLevel then return LogLevel.OFF end
@@ -46,7 +46,6 @@ function Logger._fetchLogLevelConvar(self)
     end
 
     return nil
-
 end
 
 
