@@ -5,13 +5,16 @@ use_experimental_fxv2_oal "yes"
 
 author "DevDaddyJacob"
 description "DevDaddyJacob's common FiveM libraries"
-version "1.1.1"
+version "1.2.0"
 
 shared_scripts {
+	"shared/dataview.lua",
 	"shared/logging.lua",
+	"shared/types.lua",
 }
 
 client_scripts {
+	"client/gizmo.lua",
 	"client/input.lua",
 	"client/rpc.lua",
 }
