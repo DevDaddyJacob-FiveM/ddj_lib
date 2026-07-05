@@ -44,6 +44,37 @@ function Input.registerInput(inputName, command, keybindOptions)
     end
 end
 
+
 function Input.isPressed(inputName)
     return true == inputStore[inputName]["isPressed"]
+end
+
+
+function Input.getCommandInputString(cmd)
+    local hexStr = ("%x"):format(joaat(cmd))
+    local formattedHex = hexStr:sub(-8):upper()
+
+    return "INPUT_" .. formattedHex
+end
+
+
+function Input.getUserInputAsync(key, title, default, maxLength)
+    AddTextEntry(key, title .. ":\t(Max " .. maxLength .. " Characters)")
+    DisplayOnscreenKeyboard(1, key, "", default, "", "", "", maxLength)
+
+    Citizen.Wait(0)
+
+    while true do
+        local keyboardStatus = UpdateOnscreenKeyboard()
+
+        if 3 == keyboardStatus or 2 == keyboardStatus then
+            return nil
+        end
+        
+        if 1 == keyboardStatus then
+            return GetOnscreenKeyboardResult()
+        end
+
+        Citizen.Wait(0)
+    end
 end
