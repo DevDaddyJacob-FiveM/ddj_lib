@@ -15,12 +15,20 @@ shared_scripts {
 }
 
 client_scripts {
+	-- Start the internal scripts first
+	"client/events/shared.lua",
+	"client/events/vehicles.lua",
+
 	"client/gizmo.lua",
 	"client/input.lua",
 	"client/rpc.lua",
 }
 
 server_scripts {
+	-- Start the internal scripts first
+	"server/events/shared.lua",
+	"server/events/vehicles.lua",
+
 	"server/versionCheck.lua",
 	"server/rpc.lua",
 }

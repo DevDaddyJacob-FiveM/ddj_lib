@@ -1,4 +1,4 @@
-local logger = Logger.new("ddj_lib_rpc")
+local logger = Logger.new("ddj_Lib:RPC")
 
 local registered = {}
 local pendingRequests = {}
@@ -19,7 +19,7 @@ local function invoke(player, rpcName, cb, ...)
     pendingRequests[nextRequestId] = cb
     
     TriggerClientEvent(
-        "DevDaddyJacob:Lib_RPC:Client:Invoke",
+        "DevDaddyJacob:Lib:RPC:Client:Invoke",
         player,
         rpcName,
         nextRequestId,
@@ -31,7 +31,7 @@ local function invoke(player, rpcName, cb, ...)
 end
 
 
-RegisterNetEvent("DevDaddyJacob:Lib_RPC:Server:Invoke", function(rpcName, requestId, invoker, ...)
+RegisterNetEvent("DevDaddyJacob:Lib:RPC:Server:Invoke", function(rpcName, requestId, invoker, ...)
     local source = source
   
     if not registered[rpcName] then
@@ -45,12 +45,12 @@ RegisterNetEvent("DevDaddyJacob:Lib_RPC:Server:Invoke", function(rpcName, reques
     end
   
     registered[rpcName](source, function(...)
-        TriggerClientEvent("DevDaddyJacob:Lib_RPC:Client:Return", source, requestId, invoker, ...)
+        TriggerClientEvent("DevDaddyJacob:Lib:RPC:Client:Return", source, requestId, invoker, ...)
     end, ...)
 end)
 
 
-RegisterNetEvent("DevDaddyJacob:Lib_RPC:Server:Return", function(requestId, invoker, ...)
+RegisterNetEvent("DevDaddyJacob:Lib:RPC:Server:Return", function(requestId, invoker, ...)
     if not pendingRequests[requestId] then
         logger:error(
             "Client RPC return with requestId %s was called by %s but doesn't exist",
