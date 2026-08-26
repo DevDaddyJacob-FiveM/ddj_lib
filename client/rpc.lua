@@ -1,4 +1,4 @@
-local logger = Logger.new("ddj_Lib:RPC")
+local logger = Logger.new("ddj_lib:rpc")
 
 local registered = {}
 local pendingRequests = {}

@@ -6,9 +6,13 @@ local currentSeat = 0
 
 local function GetPedVehicleSeat(ped)
     local vehicle = GetVehiclePedIsIn(ped, false)
-    for i=-2,GetVehicleMaxNumberOfPassengers(vehicle) do
-        if(GetPedInVehicleSeat(vehicle, i) == ped) then return i end
+    
+    for i = -2, GetVehicleMaxNumberOfPassengers(vehicle) do
+        if GetPedInVehicleSeat(vehicle, i) == ped then
+            return i
+        end
     end
+
     return -2
 end
 
@@ -64,25 +68,27 @@ end
 Citizen.CreateThread(function()
     logger:debug("initializing vehicle events module")
 
-    -- If base events is starting, wait until it's not starting
-    local retryCount = 0
-    while 10 < retryCount and "starting" == GetResourceState("baseevents") do
-        logger:debug("resource 'baseevents' starting, waiting...")
+    if false == Config["DisableBaseEventsHook"] then
+        -- If base events is starting, wait until it's not starting
+        local retryCount = 0
+        while 10 > retryCount and "starting" == GetResourceState("baseevents") do
+            logger:debug("resource 'baseevents' starting, waiting...")
 
-        Citizen.Wait(500)
-        retryCount = retryCount + 1
-    end
+            Citizen.Wait(500)
+            retryCount = retryCount + 1
+        end
 
-    if 10 >= retryCount then
-        logger:fatal("resource 'baseevents' took too long to start!")
-        return
-    end
+        if 10 <= retryCount then
+            logger:fatal("resource 'baseevents' took too long to start!")
+            return
+        end
 
 
-    -- Hook into the events from baseevents
-    if "started" == GetResourceState("baseevents") then
-        logger:debug("finished initializing vehicle events module")
-        return
+        -- Hook into the events from baseevents
+        if "started" == GetResourceState("baseevents") then
+            logger:debug("finished initializing vehicle events module")
+            return
+        end
     end
 
 
@@ -97,18 +103,18 @@ end)
     Usage demo:
 
     RegisterNetEvent("DevDaddyJacob:Lib:Events:Client:OnEnteringVehicle", function(vehicle, seat, displayName, vehNetId)
-        -- Do stuff
+        print("<OnEnteringVehicle>", vehicle, seat, displayName, vehNetId)
     end)
 
     RegisterNetEvent("DevDaddyJacob:Lib:Events:Client:OnAbortEnteringVehicle", function()
-        -- Do stuff
+        print("<OnAbortEnteringVehicle>")
     end)
 
     RegisterNetEvent("DevDaddyJacob:Lib:Events:Client:OnEnteredVehicle", function(vehicle, seat, displayName, vehNetId)
-        -- Do stuff
+        print("<OnEnteredVehicle>", vehicle, seat, displayName, vehNetId)
     end)
 
     RegisterNetEvent("DevDaddyJacob:Lib:Events:Client:OnLeftVehicle", function(vehicle, seat, displayName, vehNetId)
-        -- Do stuff
+        print("<OnLeftVehicle>", vehicle, seat, displayName, vehNetId)
     end)
 ]]

@@ -40,21 +40,6 @@ end
 Citizen.CreateThread(function()
     logger:debug("initializing vehicle events module")
 
-    -- If base events is starting, wait until it's not starting
-    local retryCount = 0
-    while 10 > retryCount and "starting" == GetResourceState("baseevents") do
-        logger:debug("resource 'baseevents' starting, waiting...")
-
-        Citizen.Wait(500)
-        retryCount = retryCount + 1
-    end
-
-    if 10 <= retryCount then
-        logger:fatal("resource 'baseevents' took too long to start!")
-        return
-    end
-
-
     -- Define the event mapping
     local eventMapping = {
         enteringVehicle = {
@@ -80,22 +65,41 @@ Citizen.CreateThread(function()
     }
 
 
-    -- Hook into the events from baseevents
-    if "started" == GetResourceState("baseevents") then
-        for key, value in pairs(eventMapping) do
-            logger:trace("hooking into baseevents event '%s'", value.baseeventsEvent)
+    if false == Config["DisableBaseEventsHook"] then
+        -- If base events is starting, wait until it's not starting
+        local retryCount = 0
+        while 10 > retryCount and "starting" == GetResourceState("baseevents") do
+            logger:debug("resource 'baseevents' starting, waiting...")
 
-            RegisterNetEvent(value.baseeventsEvent, function(source, ...)
-                TriggerServerEvent(value.ddjEvent, source, ...)    
-            end)
+            Citizen.Wait(500)
+            retryCount = retryCount + 1
         end
 
-        logger:debug("finished hooking into resource 'baseevents'")
+        if 10 <= retryCount then
+            logger:fatal("resource 'baseevents' took too long to start!")
+            return
+        end
+
+
+        -- Hook into the events from baseevents
+        if "started" == GetResourceState("baseevents") then
+            for key, value in pairs(eventMapping) do
+                logger:trace("hooking into baseevents event '%s'", value.baseeventsEvent)
+
+                RegisterNetEvent(value.baseeventsEvent, function(...)
+                    value.ddjFunc(source, ...)
+                end)
+            end
+
+            logger:debug("finished hooking into resource 'baseevents'")
+        end
     end
 
     for key, value in pairs(eventMapping) do
         logger:trace("registering event '%s'", value.ddjEvent)
-        RegisterNetEvent(value.ddjEvent, value.ddjFunc)
+        RegisterNetEvent(value.ddjEvent, function(...)
+            value.ddjFunc(source, ...)
+        end)
     end
 
     logger:debug("finished initializing vehicle events module")

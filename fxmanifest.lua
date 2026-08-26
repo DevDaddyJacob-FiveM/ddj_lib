@@ -34,5 +34,7 @@ server_scripts {
 }
 
 files {
+	"client/controls.lua",
+	"client/drawText2DThisFrame.lua",
 	"imports/rpc.lua",
 }

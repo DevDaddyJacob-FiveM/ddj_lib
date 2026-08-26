@@ -1,13 +1,21 @@
+local _logger = logger
+if nil == _logger then
+    _logger = Logger.new("ddj_lib")
+end
+
+
 local inputStore = {}
 Input = {}
 
 function Input.registerInput(inputName, command, keybindOptions)
     if nil ~= inputStore[inputName] then
-        logger.warn("attempted to register input \"%s\" when it was already registered", inputName)
+        _logger:warn("attempted to register input \"%s\" when it was already registered", inputName)
         return
     end
 
     inputStore[inputName] = {}
+    inputStore[inputName]["onPressFuncs"] = {}
+    inputStore[inputName]["onReleaseFuncs"] = {}
     inputStore[inputName]["isPressed"] = false
     inputStore[inputName]["data"] = {
         command = command,
@@ -16,10 +24,18 @@ function Input.registerInput(inputName, command, keybindOptions)
 
     RegisterCommand("+" .. command, function()
         inputStore[inputName]["isPressed"] = true
+
+        for _, func in ipairs(inputStore[inputName]["onPressFuncs"]) do
+            func()
+        end
     end)
 
     RegisterCommand("-" .. command, function()
         inputStore[inputName]["isPressed"] = false
+
+        for _, func in ipairs(inputStore[inputName]["onReleaseFuncs"]) do
+            func()
+        end
     end)
 
     if nil ~= keybindOptions then
@@ -47,6 +63,36 @@ end
 
 function Input.isPressed(inputName)
     return true == inputStore[inputName]["isPressed"]
+end
+
+
+function Input.onPressed(inputName, func)
+    if "function" ~= type(func) then
+        _logger:error(
+            "illegal argument #2 to Input.onPressed. Expected function, got %s",
+            type(func)
+        )
+
+        return
+    end
+
+    local index = #inputStore[inputName]["onPressFuncs"] + 1
+    inputStore[inputName]["onPressFuncs"][index] = func
+end
+
+
+function Input.onReleased(inputName, func)
+    if "function" ~= type(func) then
+        _logger:error(
+            "illegal argument #2 to Input.onReleased. Expected function, got %s",
+            type(func)
+        )
+        
+        return
+    end
+
+    local index = #inputStore[inputName]["onReleaseFuncs"] + 1
+    inputStore[inputName]["onReleaseFuncs"][index] = func
 end
 
 
