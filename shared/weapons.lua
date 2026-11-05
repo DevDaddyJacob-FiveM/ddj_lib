@@ -44,7 +44,7 @@ WEAPONS = {
     ["weapon_ball"]= {
         hash = `weapon_ball`,
         name = GetLabelText("WT_BALL"),
-        description = GetLabelText("WT_BALL") + ".",
+        description = GetLabelText("WT_BALL") .. ".",
     },
     ["weapon_battleaxe"]= {
         hash = `weapon_battleaxe`,
@@ -74,7 +74,7 @@ WEAPONS = {
     ["weapon_bzgas"]= {
         hash = `weapon_bzgas`,
         name = GetLabelText("WT_BZGAS"),
-        description = GetLabelText("WT_BZGAS") + ".",
+        description = GetLabelText("WT_BZGAS") .. ".",
     },
     ["weapon_carbinerifle"]= {
         hash = `weapon_carbinerifle`,
@@ -113,8 +113,8 @@ WEAPONS = {
     },
     ["weapon_compactrifle"]= {
         hash = `weapon_compactrifle`,
-        name = GetLabelText("WT,
-        description = GetLabelText("WTD_CMPRIFLE") + "~n~",
+        name = GetLabelText("WT_CMPRIFLE"),
+        description = GetLabelText("WTD_CMPRIFLE") .. "~n~",
     },
     ["weapon_crowbar"]= {
         hash = `weapon_crowbar`,
@@ -139,17 +139,17 @@ WEAPONS = {
     ["weapon_fireextinguisher"]= {
         hash = `weapon_fireextinguisher`,
         name = GetLabelText("WT_FIRE"),
-        description = GetLabelText("WT_FIRE") + ".",
+        description = GetLabelText("WT_FIRE") .. ".",
     },
     ["weapon_firework"]= {
         hash = `weapon_firework`,
         name = GetLabelText("WT_FWRKLNCHR"),
-        description = GetLabelText("WT_FWRKLNCHR") + ".",
+        description = GetLabelText("WT_FWRKLNCHR") .. ".",
     },
     ["weapon_flare"]= {
         hash = `weapon_flare`,
         name = GetLabelText("WT_FLARE"),
-        description = GetLabelText("WT_FLARE") + ".",
+        description = GetLabelText("WT_FLARE") .. ".",
     },
     ["weapon_flaregun"]= {
         hash = `weapon_flaregun`,
@@ -379,7 +379,7 @@ WEAPONS = {
     ["weapon_snowball"]= {
         hash = `weapon_snowball`,
         name = GetLabelText("WT_SNWBALL"),
-        description = GetLabelText("WT_SNWBALL") + ".",
+        description = GetLabelText("WT_SNWBALL") .. ".",
     },
     ["weapon_snspistol"]= {
         hash = `weapon_snspistol`,
