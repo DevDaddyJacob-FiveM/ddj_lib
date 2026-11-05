@@ -5,7 +5,7 @@ use_experimental_fxv2_oal "yes"
 
 author "DevDaddyJacob"
 description "DevDaddyJacob's common FiveM libraries"
-version "1.3.0"
+version "1.4.0"
 
 shared_scripts {
 	"shared/logging.lua",
@@ -37,4 +37,5 @@ files {
 	"client/controls.lua",
 	"client/drawText2DThisFrame.lua",
 	"imports/rpc.lua",
+	"shared/weapons.lua",
 }
